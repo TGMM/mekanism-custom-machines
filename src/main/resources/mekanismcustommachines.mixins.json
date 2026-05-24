@@ -1,6 +1,6 @@
 {
   "required": true,
-  "package": "com.kaliumstudios.mekanismcustommachines.mixin",
+  "package": "com.kaliumstudios.mekanismcustommachines.impl.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
     "MekanismRecipeTypeMixin"

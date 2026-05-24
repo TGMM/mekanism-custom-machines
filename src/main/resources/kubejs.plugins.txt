@@ -1,1 +1,1 @@
-com.kaliumstudios.mekanismcustommachines.kubejs.MekanismCustomMachinesKubeJSPlugin mekanismcustommachines
+com.kaliumstudios.mekanismcustommachines.integration.kubejs.MekanismCustomMachinesKubeJSPlugin mekanismcustommachines

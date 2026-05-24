@@ -1,6 +1,8 @@
-package com.kaliumstudios.mekanismcustommachines;
+package com.kaliumstudios.mekanismcustommachines.impl.recipe;
 
 import java.util.function.BiFunction;
+
+import com.kaliumstudios.mekanismcustommachines.api.MekanismCustomMachinesAPI;
 
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.basic.BasicItemStackToItemStackRecipe;
@@ -17,30 +19,40 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
+/**
+ * Recipe class shared by all Item→Item custom machines.
+ * <p>
+ * One class covers every registered Item→Item machine; the
+ * {@link mekanism.common.recipe.MekanismRecipeType} instance (one per machine)
+ * is the discriminator that routes recipes to the correct machine.
+ */
 public class GenericItemToItemRecipe extends BasicItemStackToItemStackRecipe implements IBasicItemStackOutput {
+
     private final Holder<Item> machineItemHolder;
     private final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<GenericItemToItemRecipe>> recipeSerializer;
     private final String machineName;
 
-    public GenericItemToItemRecipe(ItemStackIngredient input, ItemStack output,
+    public GenericItemToItemRecipe(
+            ItemStackIngredient input,
+            ItemStack output,
             RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> recipeType,
-            String machineName,
+            ResourceLocation machineId,
             DeferredHolder<RecipeSerializer<?>, RecipeSerializer<GenericItemToItemRecipe>> recipeSerializer) {
         super(input, output, recipeType.value());
-
-        machineItemHolder = DeferredHolder.create(Registries.ITEM,
-                ResourceLocation.fromNamespaceAndPath(MekanismCustomMachines.MODID,
-                        machineName));
+        this.machineItemHolder = DeferredHolder.create(Registries.ITEM, machineId);
         this.recipeSerializer = recipeSerializer;
-        this.machineName = machineName;
+        this.machineName = machineId.getPath();
     }
 
+    /**
+     * Returns a factory {@link BiFunction} suitable for passing to
+     * {@link mekanism.common.recipe.serializer.MekanismRecipeSerializer#itemToItem}.
+     */
     public static BiFunction<ItemStackIngredient, ItemStack, GenericItemToItemRecipe> getFactory(
             RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> recipeType,
-            String machineName,
+            ResourceLocation machineId,
             DeferredHolder<RecipeSerializer<?>, RecipeSerializer<GenericItemToItemRecipe>> recipeSerializer) {
-        return (input, output) -> new GenericItemToItemRecipe(input, output, recipeType, machineName,
-                recipeSerializer);
+        return (input, output) -> new GenericItemToItemRecipe(input, output, recipeType, machineId, recipeSerializer);
     }
 
     @Override
