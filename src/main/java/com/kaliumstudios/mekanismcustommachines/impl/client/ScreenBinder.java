@@ -1,6 +1,10 @@
 package com.kaliumstudios.mekanismcustommachines.impl.client;
 
 import com.kaliumstudios.mekanismcustommachines.api.MachineRegistry;
+import com.kaliumstudios.mekanismcustommachines.api.definition.ItemChemicalToItemDefinition;
+import com.kaliumstudios.mekanismcustommachines.api.definition.ItemToItemDefinition;
+import com.kaliumstudios.mekanismcustommachines.api.definition.MachineDefinition;
+import com.kaliumstudios.mekanismcustommachines.impl.tile.GenericAdvancedElectricMachineTile;
 import com.kaliumstudios.mekanismcustommachines.impl.tile.GenericElectricMachineTile;
 
 import mekanism.client.ClientRegistrationUtil;
@@ -11,25 +15,28 @@ import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 /**
  * Registers screens for all custom machines at client setup time.
  * <p>
- * Iterates {@link MachineRegistry#all()} and calls
- * {@link ClientRegistrationUtil#registerElectricScreen} for each machine's
- * container type. This replaces the old {@code screenContainers} static list
- * on the main mod class, and is not tied to any specific tile entity type.
+ * Iterates {@link MachineRegistry#all()} and dispatches based on the
+ * {@link MachineDefinition} subtype to the appropriate Mekanism screen
+ * factory (electric, advanced electric, etc.). When a new shape is added in
+ * Phase 4, add a matching {@code case} branch here.
  */
 public final class ScreenBinder {
 
     private ScreenBinder() {}
 
-    @SuppressWarnings("unchecked")
     public static void registerScreens(RegisterMenuScreensEvent event) {
-        MachineRegistry.all().forEach(machine -> {
-            // All v1 machines use GenericElectricMachineTile or a subtype of
-            // TileEntityElectricMachine, so this cast is safe. When additional
-            // tile types are added in Phase 4, this dispatch will be updated.
-            ContainerTypeRegistryObject<MekanismTileContainer<GenericElectricMachineTile>> containerType =
-                    (ContainerTypeRegistryObject<MekanismTileContainer<GenericElectricMachineTile>>)
-                    machine.holders().containerType();
-            ClientRegistrationUtil.registerElectricScreen(event, containerType);
-        });
+        MachineRegistry.all().forEach(machine -> dispatch(event, machine.definition(), machine.holders().containerType()));
+    }
+
+    @SuppressWarnings("unchecked")
+    private static void dispatch(RegisterMenuScreensEvent event, MachineDefinition def, ContainerTypeRegistryObject<?> rawType) {
+        switch (def) {
+            case ItemToItemDefinition ignored ->
+                    ClientRegistrationUtil.registerElectricScreen(event,
+                            (ContainerTypeRegistryObject<MekanismTileContainer<GenericElectricMachineTile>>) rawType);
+            case ItemChemicalToItemDefinition ignored ->
+                    ClientRegistrationUtil.registerAdvancedElectricScreen(event,
+                            (ContainerTypeRegistryObject<MekanismTileContainer<GenericAdvancedElectricMachineTile>>) rawType);
+        }
     }
 }

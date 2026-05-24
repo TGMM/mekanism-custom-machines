@@ -2,6 +2,7 @@ package com.kaliumstudios.mekanismcustommachines.impl;
 
 import com.kaliumstudios.mekanismcustommachines.api.MachineRegistry;
 import com.kaliumstudios.mekanismcustommachines.api.MekanismCustomMachinesAPI;
+import com.kaliumstudios.mekanismcustommachines.api.definition.ItemChemicalToItemDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.ItemToItemDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.energy.EnergyProfile;
 import com.kaliumstudios.mekanismcustommachines.api.event.RegisterCustomMachinesEvent;
@@ -35,13 +36,21 @@ public class MekanismCustomMachines {
         MachineRegistryImpl registry = new MachineRegistryImpl(modEventBus);
         MachineRegistry.setDelegate(registry);
 
-        // ── 2. Register built-in test machine ──────────────────────────────
-        // This demonstrates the library API and validates the pipeline.
+        // ── 2. Register built-in test machines ─────────────────────────────
+        // These demonstrate the library API and validate each pipeline.
         // Remove or move to a dev-only config option before the first release.
         MachineRegistry.register(
                 ItemToItemDefinition.builder(MekanismCustomMachinesAPI.MODID + ":test_chamber")
                         .processName("Testing")
                         .energy(EnergyProfile.defaultMachine())
+                        .ticks(200)
+                        .build());
+
+        MachineRegistry.register(
+                ItemChemicalToItemDefinition.builder(MekanismCustomMachinesAPI.MODID + ":test_compressor")
+                        .processName("Compressing")
+                        .energy(200, 10_000)
+                        .maxChemical(10_000)
                         .ticks(200)
                         .build());
 
