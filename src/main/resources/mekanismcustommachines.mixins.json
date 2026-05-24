@@ -2,7 +2,9 @@
   "required": true,
   "package": "com.kaliumstudios.mekanismcustommachines.mixin",
   "compatibilityLevel": "JAVA_21",
-  "mixins": [],
+  "mixins": [
+    "MekanismRecipeTypeMixin"
+  ],
   "injectors": {
     "defaultRequire": 1
   },
