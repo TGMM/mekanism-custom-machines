@@ -20,7 +20,7 @@ import com.kaliumstudios.mekanismcustommachines.impl.registry.RegisteredMachineI
  */
 sealed interface MachineRegistrar<D extends MachineDefinition>
         permits ItemToItemRegistrar, ItemChemicalToItemRegistrar, CombinerRegistrar,
-                SawmillRegistrar, ItemToChemicalRegistrar {
+                SawmillRegistrar, ItemToChemicalRegistrar, ChemicalToItemRegistrar {
 
     RegisteredMachineImpl register(D definition, DeferredBundle bundle);
 }

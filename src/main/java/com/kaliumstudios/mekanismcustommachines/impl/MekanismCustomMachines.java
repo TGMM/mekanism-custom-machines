@@ -2,6 +2,7 @@ package com.kaliumstudios.mekanismcustommachines.impl;
 
 import com.kaliumstudios.mekanismcustommachines.api.MachineRegistry;
 import com.kaliumstudios.mekanismcustommachines.api.MekanismCustomMachinesAPI;
+import com.kaliumstudios.mekanismcustommachines.api.definition.ChemicalToItemDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.CombinerDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.ItemChemicalToItemDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.ItemToChemicalDefinition;
@@ -77,6 +78,14 @@ public class MekanismCustomMachines {
                         .energy(200, 10_000)
                         .maxChemical(10_000)
                         .ticks(100)
+                        .build());
+
+        MachineRegistry.register(
+                ChemicalToItemDefinition.builder(MekanismCustomMachinesAPI.MODID + ":test_crystallizer")
+                        .processName("Crystallizing")
+                        .energy(200, 10_000)
+                        .maxChemical(10_000)
+                        .ticks(200)
                         .build());
 
         // ── 3. Fire the public registration event ──────────────────────────

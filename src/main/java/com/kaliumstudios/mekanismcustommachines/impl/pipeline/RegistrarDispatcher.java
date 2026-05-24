@@ -1,5 +1,6 @@
 package com.kaliumstudios.mekanismcustommachines.impl.pipeline;
 
+import com.kaliumstudios.mekanismcustommachines.api.definition.ChemicalToItemDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.CombinerDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.ItemChemicalToItemDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.ItemToChemicalDefinition;
@@ -26,6 +27,7 @@ public final class RegistrarDispatcher {
             case CombinerDefinition d -> CombinerRegistrar.INSTANCE.register(d, bundle);
             case SawmillDefinition d -> SawmillRegistrar.INSTANCE.register(d, bundle);
             case ItemToChemicalDefinition d -> ItemToChemicalRegistrar.INSTANCE.register(d, bundle);
+            case ChemicalToItemDefinition d -> ChemicalToItemRegistrar.INSTANCE.register(d, bundle);
         };
     }
 }
