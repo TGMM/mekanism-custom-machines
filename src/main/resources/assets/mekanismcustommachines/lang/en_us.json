@@ -2,7 +2,6 @@
   "itemGroup.mekanismcustommachines": "Example Mod Tab",
   "block.mekanismcustommachines.example_block": "Example Block",
   "item.mekanismcustommachines.example_item": "Example Item",
-
   "mekanismcustommachines.configuration.title": "Mekanism: Custom Machines Configs",
   "mekanismcustommachines.configuration.section.mekanismcustommachines.common.toml": "Mekanism: Custom Machines Configs",
   "mekanismcustommachines.configuration.section.mekanismcustommachines.common.toml.title": "Mekanism: Custom Machines Configs",
