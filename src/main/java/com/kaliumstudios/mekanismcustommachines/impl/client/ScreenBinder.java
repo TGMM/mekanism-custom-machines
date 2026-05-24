@@ -5,9 +5,11 @@ import com.kaliumstudios.mekanismcustommachines.api.definition.CombinerDefinitio
 import com.kaliumstudios.mekanismcustommachines.api.definition.ItemChemicalToItemDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.ItemToItemDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.MachineDefinition;
+import com.kaliumstudios.mekanismcustommachines.api.definition.SawmillDefinition;
 import com.kaliumstudios.mekanismcustommachines.impl.tile.GenericAdvancedElectricMachineTile;
 import com.kaliumstudios.mekanismcustommachines.impl.tile.GenericCombinerTile;
 import com.kaliumstudios.mekanismcustommachines.impl.tile.GenericElectricMachineTile;
+import com.kaliumstudios.mekanismcustommachines.impl.tile.GenericSawmillTile;
 
 import mekanism.client.ClientRegistrationUtil;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -42,6 +44,10 @@ public final class ScreenBinder {
                     ClientRegistrationUtil.registerScreen(event,
                             (ContainerTypeRegistryObject<MekanismTileContainer<GenericCombinerTile>>) rawType,
                             GenericCombinerScreen::new);
+            case SawmillDefinition ignored ->
+                    ClientRegistrationUtil.registerScreen(event,
+                            (ContainerTypeRegistryObject<MekanismTileContainer<GenericSawmillTile>>) rawType,
+                            GenericSawmillScreen::new);
         }
     }
 }

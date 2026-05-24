@@ -5,6 +5,7 @@ import com.kaliumstudios.mekanismcustommachines.api.MekanismCustomMachinesAPI;
 import com.kaliumstudios.mekanismcustommachines.api.definition.CombinerDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.ItemChemicalToItemDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.ItemToItemDefinition;
+import com.kaliumstudios.mekanismcustommachines.api.definition.SawmillDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.energy.EnergyProfile;
 import com.kaliumstudios.mekanismcustommachines.api.event.RegisterCustomMachinesEvent;
 import com.kaliumstudios.mekanismcustommachines.impl.client.ScreenBinder;
@@ -58,6 +59,13 @@ public class MekanismCustomMachines {
         MachineRegistry.register(
                 CombinerDefinition.builder(MekanismCustomMachinesAPI.MODID + ":test_combiner")
                         .processName("Combining")
+                        .energy(200, 10_000)
+                        .ticks(200)
+                        .build());
+
+        MachineRegistry.register(
+                SawmillDefinition.builder(MekanismCustomMachinesAPI.MODID + ":test_sawmill")
+                        .processName("Sawing")
                         .energy(200, 10_000)
                         .ticks(200)
                         .build());
