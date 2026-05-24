@@ -4,7 +4,6 @@ import org.jetbrains.annotations.NotNull;
 
 import com.kaliumstudios.mekanismcustommachines.api.definition.ItemToItemDefinition;
 
-import mekanism.api.providers.IBlockProvider;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RVRecipeTypeWrapper;
@@ -13,7 +12,10 @@ import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
 import mekanism.common.registration.impl.RecipeTypeRegistryObject;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Holder;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
+import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType.BlockEntitySupplier;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -31,7 +33,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class GenericElectricMachineTile extends TileEntityElectricMachine {
 
     private final RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> recipeType;
-    private final IBlockProvider machine;
+    private final Holder<Block> machine;
     private final ItemToItemDefinition definition;
 
     // Lazily initialised to avoid allocating before the recipe type is resolved.
@@ -40,7 +42,7 @@ public class GenericElectricMachineTile extends TileEntityElectricMachine {
     public GenericElectricMachineTile(
             BlockPos pos,
             BlockState state,
-            IBlockProvider machine,
+            Holder<Block> machine,
             RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> recipeType,
             ItemToItemDefinition definition) {
         super(machine, pos, state, definition.baseTicksRequired());
@@ -54,7 +56,7 @@ public class GenericElectricMachineTile extends TileEntityElectricMachine {
      * block provider, recipe type, and definition.
      */
     public static BlockEntitySupplier<GenericElectricMachineTile> factory(
-            IBlockProvider machine,
+            Holder<Block> machine,
             RecipeTypeRegistryObject<SingleRecipeInput, ItemStackToItemStackRecipe, SingleItem<ItemStackToItemStackRecipe>> recipeType,
             ItemToItemDefinition definition) {
         return (pos, state) -> new GenericElectricMachineTile(pos, state, machine, recipeType, definition);
@@ -77,7 +79,7 @@ public class GenericElectricMachineTile extends TileEntityElectricMachine {
                     layout.yOffset(),
                     layout.width(),
                     layout.height(),
-                    machine);
+                    (ItemLike) machine);
         }
         return recipeViewerType;
     }
