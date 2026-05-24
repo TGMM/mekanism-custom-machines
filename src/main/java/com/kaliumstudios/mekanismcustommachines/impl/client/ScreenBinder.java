@@ -3,12 +3,14 @@ package com.kaliumstudios.mekanismcustommachines.impl.client;
 import com.kaliumstudios.mekanismcustommachines.api.MachineRegistry;
 import com.kaliumstudios.mekanismcustommachines.api.definition.CombinerDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.ItemChemicalToItemDefinition;
+import com.kaliumstudios.mekanismcustommachines.api.definition.ItemToChemicalDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.ItemToItemDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.MachineDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.SawmillDefinition;
 import com.kaliumstudios.mekanismcustommachines.impl.tile.GenericAdvancedElectricMachineTile;
 import com.kaliumstudios.mekanismcustommachines.impl.tile.GenericCombinerTile;
 import com.kaliumstudios.mekanismcustommachines.impl.tile.GenericElectricMachineTile;
+import com.kaliumstudios.mekanismcustommachines.impl.tile.GenericItemToChemicalTile;
 import com.kaliumstudios.mekanismcustommachines.impl.tile.GenericSawmillTile;
 
 import mekanism.client.ClientRegistrationUtil;
@@ -18,10 +20,6 @@ import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 
 /**
  * Registers screens for all custom machines at client setup time.
- * <p>
- * Iterates {@link MachineRegistry#all()} and dispatches based on the
- * {@link MachineDefinition} subtype to the appropriate screen factory.
- * When a new shape is added in Phase 4, add a matching {@code case} branch here.
  */
 public final class ScreenBinder {
 
@@ -48,6 +46,10 @@ public final class ScreenBinder {
                     ClientRegistrationUtil.registerScreen(event,
                             (ContainerTypeRegistryObject<MekanismTileContainer<GenericSawmillTile>>) rawType,
                             GenericSawmillScreen::new);
+            case ItemToChemicalDefinition ignored ->
+                    ClientRegistrationUtil.registerScreen(event,
+                            (ContainerTypeRegistryObject<MekanismTileContainer<GenericItemToChemicalTile>>) rawType,
+                            GenericItemToChemicalScreen::new);
         }
     }
 }

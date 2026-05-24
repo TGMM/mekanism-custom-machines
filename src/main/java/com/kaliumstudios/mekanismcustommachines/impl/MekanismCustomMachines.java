@@ -4,6 +4,7 @@ import com.kaliumstudios.mekanismcustommachines.api.MachineRegistry;
 import com.kaliumstudios.mekanismcustommachines.api.MekanismCustomMachinesAPI;
 import com.kaliumstudios.mekanismcustommachines.api.definition.CombinerDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.ItemChemicalToItemDefinition;
+import com.kaliumstudios.mekanismcustommachines.api.definition.ItemToChemicalDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.ItemToItemDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.SawmillDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.energy.EnergyProfile;
@@ -68,6 +69,14 @@ public class MekanismCustomMachines {
                         .processName("Sawing")
                         .energy(200, 10_000)
                         .ticks(200)
+                        .build());
+
+        MachineRegistry.register(
+                ItemToChemicalDefinition.builder(MekanismCustomMachinesAPI.MODID + ":test_oxidizer")
+                        .processName("Oxidizing")
+                        .energy(200, 10_000)
+                        .maxChemical(10_000)
+                        .ticks(100)
                         .build());
 
         // ── 3. Fire the public registration event ──────────────────────────

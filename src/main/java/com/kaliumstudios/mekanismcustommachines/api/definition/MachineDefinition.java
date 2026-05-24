@@ -18,7 +18,8 @@ import net.minecraft.sounds.SoundEvent;
  * but cannot be upgraded to factory tiers with a tier installer (v2 addition).
  */
 public sealed interface MachineDefinition
-        permits ItemToItemDefinition, ItemChemicalToItemDefinition, CombinerDefinition, SawmillDefinition {
+        permits ItemToItemDefinition, ItemChemicalToItemDefinition, CombinerDefinition,
+                SawmillDefinition, ItemToChemicalDefinition {
 
     /**
      * Fully-qualified registry id for this machine, e.g. {@code mymod:my_machine}.
