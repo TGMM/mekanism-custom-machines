@@ -1,10 +1,12 @@
 package com.kaliumstudios.mekanismcustommachines.impl.client;
 
 import com.kaliumstudios.mekanismcustommachines.api.MachineRegistry;
+import com.kaliumstudios.mekanismcustommachines.api.definition.CombinerDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.ItemChemicalToItemDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.ItemToItemDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.MachineDefinition;
 import com.kaliumstudios.mekanismcustommachines.impl.tile.GenericAdvancedElectricMachineTile;
+import com.kaliumstudios.mekanismcustommachines.impl.tile.GenericCombinerTile;
 import com.kaliumstudios.mekanismcustommachines.impl.tile.GenericElectricMachineTile;
 
 import mekanism.client.ClientRegistrationUtil;
@@ -16,9 +18,8 @@ import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
  * Registers screens for all custom machines at client setup time.
  * <p>
  * Iterates {@link MachineRegistry#all()} and dispatches based on the
- * {@link MachineDefinition} subtype to the appropriate Mekanism screen
- * factory (electric, advanced electric, etc.). When a new shape is added in
- * Phase 4, add a matching {@code case} branch here.
+ * {@link MachineDefinition} subtype to the appropriate screen factory.
+ * When a new shape is added in Phase 4, add a matching {@code case} branch here.
  */
 public final class ScreenBinder {
 
@@ -37,6 +38,10 @@ public final class ScreenBinder {
             case ItemChemicalToItemDefinition ignored ->
                     ClientRegistrationUtil.registerAdvancedElectricScreen(event,
                             (ContainerTypeRegistryObject<MekanismTileContainer<GenericAdvancedElectricMachineTile>>) rawType);
+            case CombinerDefinition ignored ->
+                    ClientRegistrationUtil.registerScreen(event,
+                            (ContainerTypeRegistryObject<MekanismTileContainer<GenericCombinerTile>>) rawType,
+                            GenericCombinerScreen::new);
         }
     }
 }

@@ -3,6 +3,7 @@
   "package": "com.kaliumstudios.mekanismcustommachines.impl.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "CustomRecipeTypedMixin",
     "MekanismRecipeTypeMixin"
   ],
   "injectors": {

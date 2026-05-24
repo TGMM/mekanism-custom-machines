@@ -1,5 +1,6 @@
 package com.kaliumstudios.mekanismcustommachines.impl.pipeline;
 
+import com.kaliumstudios.mekanismcustommachines.api.definition.CombinerDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.ItemChemicalToItemDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.ItemToItemDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.MachineDefinition;
@@ -20,6 +21,7 @@ public final class RegistrarDispatcher {
         return switch (definition) {
             case ItemToItemDefinition d -> ItemToItemRegistrar.INSTANCE.register(d, bundle);
             case ItemChemicalToItemDefinition d -> ItemChemicalToItemRegistrar.INSTANCE.register(d, bundle);
+            case CombinerDefinition d -> CombinerRegistrar.INSTANCE.register(d, bundle);
         };
     }
 }
