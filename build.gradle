@@ -34,6 +34,26 @@ repositories {
             includeGroup("mekanism")
         }
     }
+
+    maven {
+        url "https://maven.latvian.dev/releases"
+        content {
+            includeGroup "dev.latvian.mods"
+            includeGroup "dev.latvian.apps"
+        }
+    }
+
+    maven {
+        url 'https://jitpack.io'
+        content {
+            includeGroup "com.github.rtyley"
+        }
+    }
+
+    maven {
+		name = "TerraformersMC"
+		url = "https://maven.terraformersmc.com/"
+	}
 }
 
 base {
@@ -124,9 +144,13 @@ configurations {
 }
 
 dependencies {
-    compileOnlyApi("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:api")
-    
+    compileOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}")
     runtimeOnly("mekanism:Mekanism:${minecraft_version}-${mekanism_version}:all") 
+
+    api("dev.latvian.mods:kubejs-neoforge:$kubejs_version")
+    interfaceInjectionData("dev.latvian.mods:kubejs-neoforge:$kubejs_version")
+
+    runtimeOnly "dev.emi:emi-neoforge:${emi_version}" 
 }
 
 // This block of code expands all declared replace properties in the specified resource targets.
@@ -141,6 +165,7 @@ var generateModMetadata = tasks.register("generateModMetadata", ProcessResources
             mod_name               : mod_name,
             mod_license            : mod_license,
             mod_version            : mod_version,
+            mekanism_version       : mekanism_version
     ]
     inputs.properties replaceProperties
     expand replaceProperties
