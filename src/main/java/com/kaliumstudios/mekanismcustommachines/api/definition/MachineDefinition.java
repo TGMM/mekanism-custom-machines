@@ -19,7 +19,8 @@ import net.minecraft.sounds.SoundEvent;
  */
 public sealed interface MachineDefinition
         permits ItemToItemDefinition, ItemChemicalToItemDefinition, CombinerDefinition,
-                SawmillDefinition, ItemToChemicalDefinition, ChemicalToItemDefinition {
+                SawmillDefinition, ItemToChemicalDefinition, ChemicalToItemDefinition,
+                ChemicalToChemicalDefinition {
 
     /**
      * Fully-qualified registry id for this machine, e.g. {@code mymod:my_machine}.

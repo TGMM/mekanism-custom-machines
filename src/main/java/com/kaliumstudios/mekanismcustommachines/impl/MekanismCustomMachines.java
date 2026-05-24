@@ -2,6 +2,7 @@ package com.kaliumstudios.mekanismcustommachines.impl;
 
 import com.kaliumstudios.mekanismcustommachines.api.MachineRegistry;
 import com.kaliumstudios.mekanismcustommachines.api.MekanismCustomMachinesAPI;
+import com.kaliumstudios.mekanismcustommachines.api.definition.ChemicalToChemicalDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.ChemicalToItemDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.CombinerDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.ItemChemicalToItemDefinition;
@@ -83,6 +84,14 @@ public class MekanismCustomMachines {
         MachineRegistry.register(
                 ChemicalToItemDefinition.builder(MekanismCustomMachinesAPI.MODID + ":test_crystallizer")
                         .processName("Crystallizing")
+                        .energy(200, 10_000)
+                        .maxChemical(10_000)
+                        .ticks(200)
+                        .build());
+
+        MachineRegistry.register(
+                ChemicalToChemicalDefinition.builder(MekanismCustomMachinesAPI.MODID + ":test_centrifuge")
+                        .processName("Centrifuging")
                         .energy(200, 10_000)
                         .maxChemical(10_000)
                         .ticks(200)
