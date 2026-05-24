@@ -3,6 +3,7 @@ package com.kaliumstudios.mekanismcustommachines.impl.pipeline;
 import com.kaliumstudios.mekanismcustommachines.api.definition.ChemicalToChemicalDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.ChemicalToItemDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.CombinerDefinition;
+import com.kaliumstudios.mekanismcustommachines.api.definition.FluidToFluidDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.ItemChemicalToItemDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.ItemToChemicalDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.ItemToItemDefinition;
@@ -30,6 +31,7 @@ public final class RegistrarDispatcher {
             case ItemToChemicalDefinition d -> ItemToChemicalRegistrar.INSTANCE.register(d, bundle);
             case ChemicalToItemDefinition d -> ChemicalToItemRegistrar.INSTANCE.register(d, bundle);
             case ChemicalToChemicalDefinition d -> ChemicalToChemicalRegistrar.INSTANCE.register(d, bundle);
+            case FluidToFluidDefinition d -> FluidToFluidRegistrar.INSTANCE.register(d, bundle);
         };
     }
 }

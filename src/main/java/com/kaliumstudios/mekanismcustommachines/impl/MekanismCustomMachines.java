@@ -5,6 +5,7 @@ import com.kaliumstudios.mekanismcustommachines.api.MekanismCustomMachinesAPI;
 import com.kaliumstudios.mekanismcustommachines.api.definition.ChemicalToChemicalDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.ChemicalToItemDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.CombinerDefinition;
+import com.kaliumstudios.mekanismcustommachines.api.definition.FluidToFluidDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.ItemChemicalToItemDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.ItemToChemicalDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.ItemToItemDefinition;
@@ -94,6 +95,14 @@ public class MekanismCustomMachines {
                         .processName("Centrifuging")
                         .energy(200, 10_000)
                         .maxChemical(10_000)
+                        .ticks(200)
+                        .build());
+
+        MachineRegistry.register(
+                FluidToFluidDefinition.builder(MekanismCustomMachinesAPI.MODID + ":test_evaporator")
+                        .processName("Evaporating")
+                        .energy(200, 10_000)
+                        .maxFluid(10_000)
                         .ticks(200)
                         .build());
 

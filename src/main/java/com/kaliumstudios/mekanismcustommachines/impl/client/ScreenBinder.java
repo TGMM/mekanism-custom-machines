@@ -4,6 +4,7 @@ import com.kaliumstudios.mekanismcustommachines.api.MachineRegistry;
 import com.kaliumstudios.mekanismcustommachines.api.definition.ChemicalToChemicalDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.ChemicalToItemDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.CombinerDefinition;
+import com.kaliumstudios.mekanismcustommachines.api.definition.FluidToFluidDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.ItemChemicalToItemDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.ItemToChemicalDefinition;
 import com.kaliumstudios.mekanismcustommachines.api.definition.ItemToItemDefinition;
@@ -14,6 +15,7 @@ import com.kaliumstudios.mekanismcustommachines.impl.tile.GenericChemicalToChemi
 import com.kaliumstudios.mekanismcustommachines.impl.tile.GenericChemicalToItemTile;
 import com.kaliumstudios.mekanismcustommachines.impl.tile.GenericCombinerTile;
 import com.kaliumstudios.mekanismcustommachines.impl.tile.GenericElectricMachineTile;
+import com.kaliumstudios.mekanismcustommachines.impl.tile.GenericFluidToFluidTile;
 import com.kaliumstudios.mekanismcustommachines.impl.tile.GenericItemToChemicalTile;
 import com.kaliumstudios.mekanismcustommachines.impl.tile.GenericSawmillTile;
 
@@ -62,6 +64,10 @@ public final class ScreenBinder {
                     ClientRegistrationUtil.registerScreen(event,
                             (ContainerTypeRegistryObject<MekanismTileContainer<GenericChemicalToChemicalTile>>) rawType,
                             GenericChemicalToChemicalScreen::new);
+            case FluidToFluidDefinition ignored ->
+                    ClientRegistrationUtil.registerScreen(event,
+                            (ContainerTypeRegistryObject<MekanismTileContainer<GenericFluidToFluidTile>>) rawType,
+                            GenericFluidToFluidScreen::new);
         }
     }
 }
