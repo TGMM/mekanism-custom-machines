@@ -1,23 +1,19 @@
 package com.kaliumstudios.mekanismcustommachines.impl;
 
-import java.util.List;
-
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 /**
- * Mod configuration.
- * Placeholder — extend as needed when per-machine config values are added in v2.
+ * Mod configuration placeholder.
+ * <p>
+ * No configurable values are needed at this stage — machines are declared
+ * either by other mods through {@link com.kaliumstudios.mekanismcustommachines.api.event.RegisterCustomMachinesEvent}
+ * or by KubeJS scripts through the integration package, so there is nothing
+ * runtime-config-worthy yet. Extend this when per-machine toggles or global
+ * limits become relevant (e.g. v2 factory-tier support, Section 8 of PLAN.md).
  */
 public class Config {
 
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
-
-    public static final ModConfigSpec.BooleanValue REGISTER_TEST_MACHINE = BUILDER
-            .comment("Whether to register the built-in test_chamber machine. " +
-                     "Disable in production packs that don't need it.")
-            .define("registerTestMachine", true);
 
     static final ModConfigSpec SPEC = BUILDER.build();
 }

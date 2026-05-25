@@ -2,15 +2,6 @@ package com.kaliumstudios.mekanismcustommachines.impl;
 
 import com.kaliumstudios.mekanismcustommachines.api.MachineRegistry;
 import com.kaliumstudios.mekanismcustommachines.api.MekanismCustomMachinesAPI;
-import com.kaliumstudios.mekanismcustommachines.api.definition.ChemicalToChemicalDefinition;
-import com.kaliumstudios.mekanismcustommachines.api.definition.ChemicalToItemDefinition;
-import com.kaliumstudios.mekanismcustommachines.api.definition.CombinerDefinition;
-import com.kaliumstudios.mekanismcustommachines.api.definition.FluidToFluidDefinition;
-import com.kaliumstudios.mekanismcustommachines.api.definition.ItemChemicalToItemDefinition;
-import com.kaliumstudios.mekanismcustommachines.api.definition.ItemToChemicalDefinition;
-import com.kaliumstudios.mekanismcustommachines.api.definition.ItemToItemDefinition;
-import com.kaliumstudios.mekanismcustommachines.api.definition.SawmillDefinition;
-import com.kaliumstudios.mekanismcustommachines.api.energy.EnergyProfile;
 import com.kaliumstudios.mekanismcustommachines.api.event.RegisterCustomMachinesEvent;
 import com.kaliumstudios.mekanismcustommachines.impl.client.ScreenBinder;
 import com.kaliumstudios.mekanismcustommachines.impl.registry.MachineRegistryImpl;
@@ -18,7 +9,6 @@ import com.kaliumstudios.mekanismcustommachines.impl.registry.MachineRegistryImp
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.common.NeoForge;
 
 /**
@@ -27,12 +17,17 @@ import net.neoforged.neoforge.common.NeoForge;
  * Responsibilities:
  * <ol>
  *   <li>Wire {@link MachineRegistryImpl} as the {@link MachineRegistry} delegate.</li>
- *   <li>Fire {@link RegisterCustomMachinesEvent} so other mods (and the built-in
- *       test registration) can register their machines before NeoForge's
- *       {@code RegisterEvent} closes.</li>
+ *   <li>Fire {@link RegisterCustomMachinesEvent} so other mods — and KubeJS
+ *       scripts via the bridge in
+ *       {@link com.kaliumstudios.mekanismcustommachines.integration.kubejs.MekanismCustomMachinesKubeJSPlugin} —
+ *       can register their machines before NeoForge's {@code RegisterEvent} closes.</li>
  *   <li>Freeze the registry after the event to catch late registrations.</li>
  *   <li>Register the client screen binder.</li>
  * </ol>
+ * <p>
+ * No machines are registered out of the box. End-to-end demo scripts that
+ * exercise every supported shape live in {@code examples/}; copy them into
+ * a KubeJS pack to try them.
  */
 @Mod(MekanismCustomMachinesAPI.MODID)
 public class MekanismCustomMachines {
@@ -42,78 +37,16 @@ public class MekanismCustomMachines {
         MachineRegistryImpl registry = new MachineRegistryImpl(modEventBus);
         MachineRegistry.setDelegate(registry);
 
-        // ── 2. Register built-in test machines ─────────────────────────────
-        // These demonstrate the library API and validate each pipeline.
-        // Remove or move to a dev-only config option before the first release.
-        MachineRegistry.register(
-                ItemToItemDefinition.builder(MekanismCustomMachinesAPI.MODID + ":test_chamber")
-                        .processName("Testing")
-                        .energy(EnergyProfile.defaultMachine())
-                        .ticks(200)
-                        .build());
-
-        MachineRegistry.register(
-                ItemChemicalToItemDefinition.builder(MekanismCustomMachinesAPI.MODID + ":test_compressor")
-                        .processName("Compressing")
-                        .energy(200, 10_000)
-                        .maxChemical(10_000)
-                        .ticks(200)
-                        .build());
-
-        MachineRegistry.register(
-                CombinerDefinition.builder(MekanismCustomMachinesAPI.MODID + ":test_combiner")
-                        .processName("Combining")
-                        .energy(200, 10_000)
-                        .ticks(200)
-                        .build());
-
-        MachineRegistry.register(
-                SawmillDefinition.builder(MekanismCustomMachinesAPI.MODID + ":test_sawmill")
-                        .processName("Sawing")
-                        .energy(200, 10_000)
-                        .ticks(200)
-                        .build());
-
-        MachineRegistry.register(
-                ItemToChemicalDefinition.builder(MekanismCustomMachinesAPI.MODID + ":test_oxidizer")
-                        .processName("Oxidizing")
-                        .energy(200, 10_000)
-                        .maxChemical(10_000)
-                        .ticks(100)
-                        .build());
-
-        MachineRegistry.register(
-                ChemicalToItemDefinition.builder(MekanismCustomMachinesAPI.MODID + ":test_crystallizer")
-                        .processName("Crystallizing")
-                        .energy(200, 10_000)
-                        .maxChemical(10_000)
-                        .ticks(200)
-                        .build());
-
-        MachineRegistry.register(
-                ChemicalToChemicalDefinition.builder(MekanismCustomMachinesAPI.MODID + ":test_centrifuge")
-                        .processName("Centrifuging")
-                        .energy(200, 10_000)
-                        .maxChemical(10_000)
-                        .ticks(200)
-                        .build());
-
-        MachineRegistry.register(
-                FluidToFluidDefinition.builder(MekanismCustomMachinesAPI.MODID + ":test_evaporator")
-                        .processName("Evaporating")
-                        .energy(200, 10_000)
-                        .maxFluid(10_000)
-                        .ticks(200)
-                        .build());
-
-        // ── 3. Fire the public registration event ──────────────────────────
-        // Other mods subscribe to RegisterCustomMachinesEvent to add their machines.
+        // ── 2. Fire the public registration event ──────────────────────────
+        // Other mods subscribe to RegisterCustomMachinesEvent (NeoForge game
+        // bus) to add their machines. The KubeJS bridge also subscribes here
+        // and forwards definitions registered through startup scripts.
         NeoForge.EVENT_BUS.post(new RegisterCustomMachinesEvent());
 
-        // ── 4. Freeze registry to prevent late registrations ───────────────
+        // ── 3. Freeze registry to prevent late registrations ───────────────
         registry.freeze();
 
-        // ── 5. Register screen binder (client-side) ────────────────────────
+        // ── 4. Register screen binder (client-side) ────────────────────────
         modEventBus.addListener(ScreenBinder::registerScreens);
     }
 }
