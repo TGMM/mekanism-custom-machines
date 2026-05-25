@@ -1,5 +1,6 @@
 package com.kaliumstudios.mekanismcustommachines.integration.kubejs;
 
+import com.kaliumstudios.mekanismcustommachines.api.MachineRegistry;
 import com.kaliumstudios.mekanismcustommachines.api.MekanismCustomMachinesAPI;
 import com.kaliumstudios.mekanismcustommachines.api.event.RegisterCustomMachinesEvent;
 import com.kaliumstudios.mekanismcustommachines.integration.kubejs.recipe.KubeJSRecipeSchemas;
@@ -41,26 +42,49 @@ public class MekanismCustomMachinesKubeJSPlugin implements KubeJSPlugin {
 
     @Override
     public void init() {
+        MekanismCustomMachinesAPI.LOGGER.info("[KubeJS bridge] init() called — plugin loaded");
         // Subscribe before our @Mod constructor fires RegisterCustomMachinesEvent.
         // The handler bridges that NeoForge event to the KubeJS startup event,
         // letting scripts register machines synchronously while the registration
-        // window is still open.
-        NeoForge.EVENT_BUS.addListener(MekanismCustomMachinesKubeJSPlugin::onRegisterCustomMachines);
-        MekanismCustomMachinesAPI.LOGGER.info("[KubeJS bridge] init complete");
+        // window is still open. Explicit Class<T> form so NeoForge cannot
+        // mis-infer the event type from a method reference.
+        NeoForge.EVENT_BUS.addListener(
+                RegisterCustomMachinesEvent.class,
+                MekanismCustomMachinesKubeJSPlugin::onRegisterCustomMachines);
+        MekanismCustomMachinesAPI.LOGGER.info("[KubeJS bridge] subscribed to RegisterCustomMachinesEvent on NeoForge.EVENT_BUS");
     }
 
     @Override
     public void registerEvents(EventGroupRegistry registry) {
         registry.register(MekanismCustomMachinesEvents.GROUP);
+        MekanismCustomMachinesAPI.LOGGER.info(
+                "[KubeJS bridge] registered event group '{}' (handlers: {})",
+                MekanismCustomMachinesEvents.GROUP.name,
+                MekanismCustomMachinesEvents.GROUP.getHandlers().keySet());
     }
 
     @Override
     public void registerRecipeSchemas(RecipeSchemaRegistry registry) {
+        MekanismCustomMachinesAPI.LOGGER.info(
+                "[KubeJS bridge] registerRecipeSchemas — machines available: {}",
+                MachineRegistry.all().stream().map(m -> m.id().toString()).toList());
         KubeJSRecipeSchemas.registerAll(registry);
     }
 
     private static void onRegisterCustomMachines(RegisterCustomMachinesEvent event) {
+        MekanismCustomMachinesAPI.LOGGER.info(
+                "[KubeJS bridge] received RegisterCustomMachinesEvent — bridging to script handlers");
         RegisterMachinesKubeEvent kubeEvent = new RegisterMachinesKubeEvent(event);
+        boolean hadListeners = MekanismCustomMachinesEvents.REGISTER_MACHINES.hasListeners();
+        if (!hadListeners) {
+            MekanismCustomMachinesAPI.LOGGER.warn(
+                    "[KubeJS bridge] NO script listeners are registered for MekanismCustomMachines.registerMachines. "
+                    + "Either no startup script called it, scripts ran AFTER our @Mod constructor "
+                    + "(load-order bug), or the event group binding is broken.");
+        }
         MekanismCustomMachinesEvents.REGISTER_MACHINES.post(ScriptType.STARTUP, kubeEvent);
+        MekanismCustomMachinesAPI.LOGGER.info(
+                "[KubeJS bridge] script handlers finished — {} machine(s) in registry now",
+                MachineRegistry.all().size());
     }
 }
