@@ -109,12 +109,24 @@ public final class KubeJSRecipeSchemas {
                     itemInputKey(SerializationConstants.MAIN_INPUT),
                     itemInputKey(SerializationConstants.EXTRA_INPUT),
                     itemOutputKey(SerializationConstants.OUTPUT));
-            case SawmillDefinition ignored -> new RecipeSchema(
-                    itemInputKey(SerializationConstants.INPUT),
-                    optionalItemOutputKey(SerializationConstants.MAIN_OUTPUT),
-                    optionalItemOutputKey(SerializationConstants.SECONDARY_OUTPUT),
-                    NumberComponent.DOUBLE.key(SerializationConstants.SECONDARY_CHANCE, ComponentRole.OTHER)
-                            .optional(0.0));
+            case SawmillDefinition ignored -> {
+                // Sawmill has only one *required* key (input); the other three are
+                // optional. KubeJS' auto-generated constructor for one positional
+                // argument would then match a single object-style call and try to
+                // assign the whole object as the input ingredient. Force the
+                // smallest constructor to take two args so object-form
+                // (event.recipes.arcane.X({input: ..., main_output: ...})) is the
+                // only single-argument path.
+                var input = itemInputKey(SerializationConstants.INPUT);
+                var mainOutput = optionalItemOutputKey(SerializationConstants.MAIN_OUTPUT);
+                var secondaryOutput = optionalItemOutputKey(SerializationConstants.SECONDARY_OUTPUT);
+                var secondaryChance = NumberComponent.DOUBLE.key(SerializationConstants.SECONDARY_CHANCE, ComponentRole.OTHER)
+                        .optional(0.0);
+                yield new RecipeSchema(input, mainOutput, secondaryOutput, secondaryChance)
+                        .constructor(input, mainOutput)
+                        .constructor(input, mainOutput, secondaryOutput)
+                        .constructor(input, mainOutput, secondaryOutput, secondaryChance);
+            }
             case ItemToChemicalDefinition ignored -> new RecipeSchema(
                     itemInputKey(SerializationConstants.INPUT),
                     chemicalOutputKey(SerializationConstants.OUTPUT));

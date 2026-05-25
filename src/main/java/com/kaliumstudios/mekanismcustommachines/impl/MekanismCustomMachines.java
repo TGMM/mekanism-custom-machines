@@ -3,13 +3,16 @@ package com.kaliumstudios.mekanismcustommachines.impl;
 import com.kaliumstudios.mekanismcustommachines.api.MachineRegistry;
 import com.kaliumstudios.mekanismcustommachines.api.MekanismCustomMachinesAPI;
 import com.kaliumstudios.mekanismcustommachines.api.event.RegisterCustomMachinesEvent;
+import com.kaliumstudios.mekanismcustommachines.impl.asset.MachineAssetPack;
 import com.kaliumstudios.mekanismcustommachines.impl.client.ScreenBinder;
 import com.kaliumstudios.mekanismcustommachines.impl.registry.MachineRegistryImpl;
 
+import net.minecraft.server.packs.PackType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.event.AddPackFindersEvent;
 
 /**
  * Main mod entry point.
@@ -57,7 +60,29 @@ public class MekanismCustomMachines {
         // ── 3. Freeze registry to prevent late registrations ───────────────
         registry.freeze();
 
-        // ── 4. Register screen binder (client-side) ────────────────────────
+        // ── 4. Register screen binder + virtual asset pack ─────────────────
         modEventBus.addListener(ScreenBinder::registerScreens);
+        modEventBus.addListener(MekanismCustomMachines::addAssetPack);
+    }
+
+    /**
+     * Registers our virtual resource pack so every machine in the registry
+     * gets blockstate / item-model / language entries aliased to the
+     * corresponding Mekanism block. Without this, custom machines render as
+     * the purple/black missing-texture cube.
+     */
+    private static void addAssetPack(AddPackFindersEvent event) {
+        if (event.getPackType() != PackType.CLIENT_RESOURCES) {
+            return;
+        }
+        event.addRepositorySource(consumer -> {
+            var pack = MachineAssetPack.createPack();
+            if (pack != null) {
+                consumer.accept(pack);
+                MekanismCustomMachinesAPI.LOGGER.info(
+                        "[MekanismCustomMachines] virtual asset pack registered for {} machine(s)",
+                        MachineRegistry.all().size());
+            }
+        });
     }
 }
