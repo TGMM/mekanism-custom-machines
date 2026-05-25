@@ -10,7 +10,6 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.neoforge.common.NeoForge;
 
 /**
  * Main mod entry point.
@@ -43,11 +42,14 @@ public class MekanismCustomMachines {
         MachineRegistry.setDelegate(registry);
 
         // ── 2. Fire the public registration event ──────────────────────────
-        // Other mods subscribe to RegisterCustomMachinesEvent (NeoForge game
-        // bus) to add their machines. The KubeJS bridge also subscribes here
-        // and forwards definitions registered through startup scripts.
+        // Other mods subscribe to RegisterCustomMachinesEvent on our
+        // dedicated event bus to add their machines. The KubeJS bridge also
+        // subscribes here and forwards definitions registered through startup
+        // scripts. We use our own bus (rather than NeoForge.EVENT_BUS)
+        // because the latter is shut down during mod construction and
+        // silently drops events posted to it before all mods finish loading.
         MekanismCustomMachinesAPI.LOGGER.info("[MekanismCustomMachines] posting RegisterCustomMachinesEvent");
-        NeoForge.EVENT_BUS.post(new RegisterCustomMachinesEvent());
+        MekanismCustomMachinesAPI.EVENT_BUS.post(new RegisterCustomMachinesEvent());
         MekanismCustomMachinesAPI.LOGGER.info(
                 "[MekanismCustomMachines] RegisterCustomMachinesEvent finished — {} machine(s) registered",
                 MachineRegistry.all().size());

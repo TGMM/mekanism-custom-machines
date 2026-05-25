@@ -11,7 +11,6 @@ import dev.latvian.mods.kubejs.event.EventGroupRegistry;
 import dev.latvian.mods.kubejs.plugin.KubeJSPlugin;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchemaRegistry;
 import dev.latvian.mods.kubejs.script.ScriptType;
-import net.neoforged.neoforge.common.NeoForge;
 
 /**
  * KubeJS plugin that bridges scripts to the
@@ -46,12 +45,14 @@ public class MekanismCustomMachinesKubeJSPlugin implements KubeJSPlugin {
         // Subscribe before our @Mod constructor fires RegisterCustomMachinesEvent.
         // The handler bridges that NeoForge event to the KubeJS startup event,
         // letting scripts register machines synchronously while the registration
-        // window is still open. Explicit Class<T> form so NeoForge cannot
-        // mis-infer the event type from a method reference.
-        NeoForge.EVENT_BUS.addListener(
+        // window is still open. We subscribe to MekanismCustomMachinesAPI.EVENT_BUS
+        // (not NeoForge.EVENT_BUS) because the latter is shut down during mod
+        // construction and would silently drop the event.
+        MekanismCustomMachinesAPI.EVENT_BUS.addListener(
                 RegisterCustomMachinesEvent.class,
                 MekanismCustomMachinesKubeJSPlugin::onRegisterCustomMachines);
-        MekanismCustomMachinesAPI.LOGGER.info("[KubeJS bridge] subscribed to RegisterCustomMachinesEvent on NeoForge.EVENT_BUS");
+        MekanismCustomMachinesAPI.LOGGER.info(
+                "[KubeJS bridge] subscribed to RegisterCustomMachinesEvent on MekanismCustomMachinesAPI.EVENT_BUS");
     }
 
     @Override

@@ -41,14 +41,16 @@ see `PLAN.md` Section 8 for the proposed implementation strategy.
 
 ## Java API
 
-Subscribe to `RegisterCustomMachinesEvent` on the NeoForge game bus from your
-own `@Mod` constructor:
+Subscribe to `RegisterCustomMachinesEvent` on **`MekanismCustomMachinesAPI.EVENT_BUS`**
+from your own `@Mod` constructor (or any code that runs during mod construction):
 
 ```java
 @Mod("mymod")
 public class MyMod {
     public MyMod() {
-        NeoForge.EVENT_BUS.addListener(this::registerMekanismMachines);
+        MekanismCustomMachinesAPI.EVENT_BUS.addListener(
+                RegisterCustomMachinesEvent.class,
+                this::registerMekanismMachines);
     }
 
     private void registerMekanismMachines(RegisterCustomMachinesEvent event) {
@@ -62,6 +64,11 @@ public class MyMod {
     }
 }
 ```
+
+> **Heads up:** use `MekanismCustomMachinesAPI.EVENT_BUS`, **not**
+> `NeoForge.EVENT_BUS`. The latter is started only after every mod's
+> `@Mod` constructor has run, so events posted on it during mod construction
+> (including this one) are silently dropped.
 
 Your mod's `neoforge.mods.toml` must declare `mekanismcustommachines` as a
 dependency loaded **AFTER** it; the event fires once during our `@Mod`
